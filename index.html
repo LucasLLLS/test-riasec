@@ -330,7 +330,7 @@
 
 	      		if(arrayFinal.length>1){
 	      			
-	      			arrayFinal = getCombinations(arrayFinal, 2);	      			
+	      			arrayFinal = combinacoes(arrayFinal);	      			
 	      			
 	      			console.log(arrayFinal);
 
@@ -368,30 +368,28 @@
       	}
 
 
-      	function getCombinations(arr, n){
-		    var i,j,k,elem,l = arr.length,childperm,ret=[];
-		    if(n == 1){
-		        for(var i = 0; i < arr.length; i++){
-		            for(var j = 0; j < arr[i].length; j++){
-		                ret.push([arr[i][j]]);
-		            }
-		        }
-		        return ret;
-		    }
-		    else{
-		        for(i = 0; i < l; i++){
-		            elem = arr.shift();
-		            for(j = 0; j < elem.length; j++){
-		                childperm = getCombinations(arr.slice(), n-1);
-		                for(k = 0; k < childperm.length; k++){
-		                    ret.push([elem[j]].concat(childperm[k]));
-		                }
-		            }
-		        }
-		        return ret;
-		    }
-		    i=j=k=elem=l=childperm=ret=[]=null;
-		}
+      	var combinacoes = function(arr){
+
+      		var saida = [];
+
+	        for(var i = 0; i < arr.length; i++){
+
+	            var nexts = arr.length - i;
+	            var atual = arr[i];
+	        
+
+	            for(var ii = i; ii < arr.length -1; ii++){
+
+	                console.log(ii);
+	                saida.push([atual, arr[ii+1]]);
+
+	            }
+
+	        }
+
+	        return saida;
+
+	    }
 
 
 
