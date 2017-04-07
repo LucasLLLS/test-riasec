@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<style>
+	.ativo,.ativo:hover{
+		border: 3px solid blue;
+	}
+
+	.table-box{
+		position: fixed;
+		float: right;
+		right: 0px;
+	}
+</style>
+
+<body ng-app="riasecTest">
+
+	<div class="container" ng-controller="riasecController">
+		<h2>{{ titulo }}</h2>
+		
+		<div class="row">
+			<div class="col-sm-6">
+				<div ng-repeat="pergunta in perguntas">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							
+								{{ pergunta.pergunta }}
+
+						</div>
+						<div class="panel-body">
+							<div ng-repeat="resposta in pergunta.respostas">
+								<div class="input-group">
+
+									
+									<button ng-click="soma(pergunta, resposta)" ng-disabled="pergunta.votado" ng-class="resposta.classe" class="btn btn-default">
+										({{resposta.tipo}}) {{ resposta.resposta }}
+									</button>		
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>		
+			</div>
+
+			<div class="col-sm-6 table-box">
+				<table class="table table-striped">
+
+					<thead>
+						<tr>
+							<th ng-repeat="resultado in resultados">
+								{{ resultado.tipo }}
+							</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td ng-repeat="resultado in resultados">
+								{{ resultado.valor }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<br>
+				<button class="btn pull-right btn-primary" ng-click="resultadoFinal()">Ver resultado</button>
+
+				<h1>
+					{{resultado}}
+				</h1>
+			</div>		
+		</div>
+
+	</div>
+
+	 
+	
+	<script src="bower_components/angular/angular.min.js"></script>
+
+	<script>
+	var app = angular.module('riasecTest', []);
+      app.controller('riasecController', function($scope, $http) {
+
+      	$scope.titulo = "Teste RIASEC";
+
+      	$scope.perguntas = [
+      		{ 
+      			pergunta : 'Pergunta 1',
+      			votado : false,
+      			tipo: ['R', 'I'],
+      			respostas : [
+	      			{resposta: 'Construir coisas', tipo: 'R', classe : ''}
+	      			,{resposta: 'Aprender sobre teorias científicas', tipo: 'I', classe : ''}
+      			]
+      		}
+
+      		,{ 
+      			pergunta : 'Pergunta 2', 
+      			votado : false,
+      			tipo: ['R', 'A'],
+      			respostas : [
+	      			{resposta: 'Trabalhar ao ar livre', tipo: 'R', classe : ''}
+	      			,{resposta: 'Desenhar ou pintar coisas', tipo: 'A', classe : ''}
+      			]
+      		}
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 3', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Consertar coisas', tipo: 'R', classe : ''}
+	      	// 		,{resposta: 'Ensinar pessoas', tipo: 'S', classe : ''}
+      		// 	]
+      		// }
+
+      		,{ 
+      			pergunta : 'Pergunta 4', 
+      			votado : false,
+      			tipo: ['R', 'E'],
+      			respostas : [
+	      			{resposta: 'Construir coisas com minhas próprias mãos', tipo: 'R', classe : ''}
+	      			,{resposta: 'Supervisionar o que os outros fazem', tipo: 'E', classe : ''}
+      			]
+      		}
+
+
+      		,{ 
+      			pergunta : 'Pergunta 4', 
+      			votado : false,
+      			tipo: ['R', 'L'],
+      			respostas : [
+	      			{resposta: 'Construir coisas com minhas próprias mãos', tipo: 'R', classe : ''}
+	      			,{resposta: 'Supervisionar o que os outros fazem', tipo: 'L', classe : ''}
+      			]
+      		}
+
+      		,{ 
+      			pergunta : 'Pergunta 4', 
+      			votado : false,
+      			tipo: ['E', 'L'],
+      			respostas : [
+	      			{resposta: 'Construir coisas com minhas próprias mãos', tipo: 'E', classe : ''}
+	      			,{resposta: 'Supervisionar o que os outros fazem', tipo: 'L', classe : ''}
+      			]
+      		}
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 5', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Aprender sobre mecânica', tipo: 'R', classe : ''}
+	      	// 		,{resposta: 'Supervisionar o que os outros fazem', tipo: 'E', classe : ''}
+      		// 	]
+      		// }
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 6', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Ler artigos científicos', tipo: 'I', classe : ''}
+	      	// 		,{resposta: 'Tocar um instrumento musical', tipo: 'A', classe : ''}
+      		// 	]
+      		// }
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 7', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Usar estatística para resolver problemas', tipo: 'I', classe : ''}
+	      	// 		,{resposta: 'Cuidar das pessoas', tipo: 'S', classe : ''}
+      		// 	]
+      		// }
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 8', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Trabalhar com cientistas', tipo: 'I', classe : ''}
+	      	// 		,{resposta: 'Coordenar o trabalho de outros', tipo: 'E', classe : ''}
+      		// 	]
+      		// }
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 9', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Fazer cursos de ciências', tipo: 'I', classe : ''}
+	      	// 		,{resposta: 'Trabalhar em um ambiente organizado', tipo: 'C', classe : ''}
+      		// 	]
+      		// }
+
+      		,{ 
+      			pergunta : 'Pergunta 10', 
+      			votado : false,
+      			tipo: ['A', 'S'],
+      			respostas : [
+	      			{resposta: 'Fazer trabalhos artísticos', tipo: 'A', classe : ''}
+	      			,{resposta: 'Trabalhar com pessoas', tipo: 'S', classe : ''}
+      			]
+      		}
+
+      		,{ 
+      			pergunta : 'Pergunta 11', 
+      			votado : false,
+      			tipo: ['A', 'E'],
+      			respostas : [
+	      			{resposta: 'Fazer um curso de artes, música ou fotografia', tipo: 'A', classe : ''}
+	      			,{resposta: 'Liderar pessoas', tipo: 'E', classe : ''}
+      			]
+      		}
+
+      		// ,{ 
+      		// 	pergunta : 'Pergunta 12', 
+      		// 	votado : false,
+      		// 	respostas : [
+	      	// 		{resposta: 'Apreciar projetos artísticos', tipo: 'A', classe : ''}
+	      	// 		,{resposta: 'Arquivar documentos', tipo: 'C', classe : ''}
+      		// 	]
+      		// }
+
+      		,{ 
+      			pergunta : 'Pergunta 13', 
+      			votado : false,
+      			tipo: ['S', 'E'],
+      			respostas : [
+	      			{resposta: 'Ajudar os outros', tipo: 'S', classe : ''}
+	      			,{resposta: 'Convencer pessoas de minhas ideias', tipo: 'E', classe : ''}
+      			]
+      		}
+
+      		,{ 
+      			pergunta : 'Pergunta 14', 
+      			votado : false,
+      			tipo: ['S', 'E'],
+      			respostas : [
+	      			{resposta: 'Fazer trabalho voluntário beneficente', tipo: 'S', classe : ''}
+	      			,{resposta: 'Conferir detalhes e garantir que eles estejam certos', tipo: 'E', classe : ''}
+      			]
+      		}
+
+      		,{ 
+      			pergunta : 'Pergunta 15', 
+      			votado : false,
+      			tipo: ['E', 'C'],
+      			respostas : [
+	      			{resposta: 'Tomar decisões importantes', tipo: 'E', classe : ''}
+	      			,{resposta: 'Conferir informações', tipo: 'C', classe : ''}
+      			]
+      		}
+
+      	];
+
+
+      	$scope.soma = function(pergunta, resposta){
+
+      		var r = $scope.resultados;
+      		var tipo = resposta.tipo;
+
+      		for(var i = 0; i < r.length; i++){
+      			if(r[i].tipo==tipo){
+      				r[i].valor += 1;
+      			}
+      		}
+
+      		$scope.resultados = r;
+
+      		pergunta.votado = true;
+      		resposta.classe = "ativo";
+      	}
+      	
+      	$scope.resultados = [
+      		{tipo: 'R', valor:0},
+      		{tipo: 'I', valor:0},
+      		{tipo: 'A', valor:0},
+      		{tipo: 'S', valor:0},
+      		{tipo: 'E', valor:0},
+      		{tipo: 'C', valor:0}
+      	];
+
+      	$scope.resultadoFinal = function(){
+
+      		var p = $scope.perguntas;
+      		var nErros = 0;
+
+      		for(var i = 0; i < p.length; i++){
+      			if(!p[i].votado){
+      				nErros++;
+      			}
+      		}
+
+      		if(nErros>0){
+      			$scope.resultado = "Responda todas as perguntas";
+      		}else{
+
+      			var r = $scope.resultados;
+      			var current;
+      			var maior = -1;
+      			var empate = false;
+      			var arrayFinal = 2;
+      			var arrayParcial = [];
+
+      			for(var i = 0; i < r.length; i++){
+
+	      			var current = r[i];
+		  
+	      			if(current.valor > maior){
+
+      					maior = current.valor;
+      					arrayParcial = [current.tipo];
+
+	      			}else{
+		      			if(current.valor == maior){
+
+  							arrayParcial.push(current.tipo);
+
+		      			}
+	      			}
+
+
+	      			arrayFinal = arrayParcial;
+	      		}
+
+
+	      		if(arrayFinal.length>1){
+	      			
+	      			arrayFinal = getCombinations(arrayFinal, 2);	      			
+	      			
+	      			console.log(arrayFinal);
+
+					var novas_perguntas = [];
+
+		      		$scope.perguntas.map(function(pergunta){
+
+		      			arrayFinal.map(function( current_final ){
+		      				if (inArray( pergunta.tipo, current_final[0] ) && inArray( pergunta.tipo, current_final[1] ) ){
+
+		      					console.log();
+		      					pergunta.votado = false;
+		      					pergunta.respostas[0].classe = "";
+		      					pergunta.respostas[1].classe = "";
+
+		      					novas_perguntas.push(pergunta);
+
+		      					console.log(pergunta);
+		      				}
+		      			})
+
+		      		});
+
+		      		console.log( novas_perguntas );
+
+		      		$scope.perguntas = novas_perguntas;
+	      		}else{
+      				$scope.resultado = "Resultado final: "+arrayFinal[0];
+	      		}
+
+	      		
+
+
+      		}
+      	}
+
+
+      	function getCombinations(arr, n){
+		    var i,j,k,elem,l = arr.length,childperm,ret=[];
+		    if(n == 1){
+		        for(var i = 0; i < arr.length; i++){
+		            for(var j = 0; j < arr[i].length; j++){
+		                ret.push([arr[i][j]]);
+		            }
+		        }
+		        return ret;
+		    }
+		    else{
+		        for(i = 0; i < l; i++){
+		            elem = arr.shift();
+		            for(j = 0; j < elem.length; j++){
+		                childperm = getCombinations(arr.slice(), n-1);
+		                for(k = 0; k < childperm.length; k++){
+		                    ret.push([elem[j]].concat(childperm[k]));
+		                }
+		            }
+		        }
+		        return ret;
+		    }
+		    i=j=k=elem=l=childperm=ret=[]=null;
+		}
+
+
+
+		function arrayCompare(a1, a2) {
+		    if (a1.length != a2.length) return false;
+		    var length = a2.length;
+		    for (var i = 0; i < length; i++) {
+		        if (a1[i] !== a2[i]) return false;
+		    }
+		    return true;
+		}
+
+		function inArray(haystack, needle) {
+
+		    if( typeof haystack === "undefined" ) return false;
+
+		    var length = haystack.length;
+		    for(var i = 0; i < length; i++) {
+		        if(typeof haystack[i] == 'object') {
+		            if(arrayCompare(haystack[i], needle)) return true;
+		        } else {
+		            if(haystack[i] == needle) return true;
+		        }
+		    }
+		    return false;
+		}
+
+      });
+	</script>
+
+</body>
+</html>
